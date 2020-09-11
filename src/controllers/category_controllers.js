@@ -1,16 +1,14 @@
 const ctgModel = require('../models/category_models')
 const response = require('../helpers/response')
-const { off } = require('../configs/db')
 
 const category = {
     getAll: (req, res) => {
-        const nama = !req.query.nama ? '' : req.query.nama
         const sortBy = !req.query.sortBy ? 'id' : req.query.sortBy
         const sortType = !req.query.sortType ? 'asc' : req.query.sortType
-        const limit = !req.query.limit ? 9 : parseInt(req.query.limit)
+        const limit = !req.query.limit ? 3 : parseInt(req.query.limit)
         const page = !req.query.page ? 1 : parseInt(req.query.page)
         const offset = page === 1 ? 0 : (page - 1)*limit
-        ctgModel.getAll(nama, sortBy, sortType, limit, offset)
+        ctgModel.getAll(sortBy, sortType, limit, offset)
         .then((result) => {
             response.success(res, result, 'Get all category success')
         })

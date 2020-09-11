@@ -7,7 +7,7 @@ router
     .get('/getAll', historyController.getAll)
     .get('/getDetail/:id', historyController.getDetail)
     .post('/insert', historyController.insert)
-    .put('/update/:id', historyController.update)
+    .patch('/update/:id', historyController.update)
     .delete('/delete/:id', historyController.delete)
 
 module.exports = router

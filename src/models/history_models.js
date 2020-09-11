@@ -36,12 +36,7 @@ const history = {
     },
     update: (data, id) => {
         return new Promise((resolve, reject) => {
-            db.query(`UPDATE history SET
-            cashier = '${data.cashier}',
-            orders = '${data.orders}',
-            amount = '${data.amount}'
-            WHERE id = '${id}'`,
-            (err, result) => {
+            db.query(`UPDATE history SET ? WHERE id = ?`, [data, id], (err, result) => {
                 if (err) {
                     reject(new Error(err))
                 } else {

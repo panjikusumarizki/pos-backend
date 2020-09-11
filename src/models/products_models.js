@@ -5,7 +5,7 @@ const { error } = require('console')
 const product = {
     getAll: (nama, sortBy, sortType, limit, offset) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT product.id, category.category_name, product.name, product.price, product.date_added, product.picture FROM product INNER JOIN category ON product.id_category = category.id WHERE product.name LIKE '%${nama}%' ORDER BY ${sortBy} ${sortType} LIMIT ${offset}, ${limit}`, (err, result) => {
+            db.query(`SELECT product.id, category.category_name, product.name, product.price, product.date_added, product.picture, (SELECT COUNT(*) FROM product) as count FROM product INNER JOIN category ON product.id_category = category.id WHERE product.name LIKE '%${nama}%' ORDER BY ${sortBy} ${sortType} LIMIT ${offset}, ${limit}`, (err, result) => {
                 if (err) {
                     reject(new Error(err))
                 } else {
@@ -68,7 +68,7 @@ const product = {
                                     console.log('update image success')
                                 }
                             })
-                            db.query(`UPDATE product SET ? WHERE id = ?`, (err, resultUpd) => {
+                            db.query(`UPDATE product SET ? WHERE id = ?`, [data, id],(err, resultUpd) => {
                                 if (err) {
                                     reject(new Error(err))
                                 } else {

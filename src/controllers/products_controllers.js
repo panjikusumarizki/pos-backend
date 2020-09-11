@@ -1,5 +1,5 @@
 const productModel = require('../models/products_models')
-const response = require('../helpers/response')
+const { success, failed, successWithMeta } = require('../helpers/response')
 
 const product = {
     getAll: (req, res) => {
@@ -11,20 +11,26 @@ const product = {
         const offset = page===1 ? 0 : (page-1)*limit
         productModel.getAll(nama, sortBy, sortType, limit, offset)
         .then((result) => {
-            response.success(res, result, 'Get all product success')
+            const totalRows = result[0].count
+            const meta = {
+                totalRows: totalRows,
+                totalPage: Math.ceil(totalRows/limit),
+                page
+            }
+            successWithMeta(res, result, meta, 'Get all product success')
         })
         .catch((err) => {
-            response.failed(res, [], err.message)
+            failed(res, [], err.message)
         })
     },
     getDetail: (req, res) => {
         const id = req.params.id
         productModel.getDetail(id)
         .then((result) => {
-            response.success(res, result, 'Get detail product success')
+            success(res, result, 'Get detail product success')
         })
         .catch((err) => {
-            response.failed(res, [], err.message)
+            failed(res, [], err.message)
         })
     },
     insert: (req, res) => {
@@ -32,10 +38,10 @@ const product = {
         body.picture = req.file.filename
         productModel.insert(body)
         .then((result) => {
-            response.success(res, result, 'Insert product success')
+            success(res, result, 'Insert product success')
         })
         .catch((err) => {
-            response.failed(res, [], err.message)
+            failed(res, [], err.message)
         })
     },
     update: (req, res) => {
@@ -44,20 +50,20 @@ const product = {
         body.picture = !req.file ? '' : req.file.filename
         productModel.update(body, id)
         .then((result) => {
-            response.success(res, result, 'Update product success')
+            success(res, result, 'Update product success')
         })
         .catch((err) => {
-            response.failed(res, [], err.message)
+            failed(res, [], err.message)
         })
     },
     delete: (req, res) => {
         const id = req.params.id
         productModel.delete(id)
         .then((result) => {
-            response.success(res, result, 'Delete product success')
+            success(res, result, 'Delete product success')
         })
         .catch((err) => {
-            response.failed(res, [], err.message)
+            failed(res, [], err.message)
         })
     }
 }

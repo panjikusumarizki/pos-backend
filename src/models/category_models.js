@@ -1,9 +1,9 @@
 const db = require('../configs/db')
 
 const categories = {
-    getAll: (nama, sortBy, sortType, limit, offset) => {
+    getAll: (sortBy, sortType, limit, offset) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT category.id, category.category_name, product.name, product.price, product.picture FROM category INNER JOIN product ON product.id_category = category.id WHERE category.category_name LIKE '%${nama}%' ORDER BY ${sortBy} ${sortType} LIMIT ${offset}, ${limit}`, (err, result) => {
+            db.query(`SELECT * FROM category ORDER BY ${sortBy} ${sortType} LIMIT ${offset}, ${limit}`, (err, result) => {
                 if (err) {
                     reject(new Error(err))
                 } else {
@@ -14,7 +14,7 @@ const categories = {
     },
     getDetail: (id) => {
         return new Promise((resolve, reject) => {
-            db.query(`SELECT category.id, category.category_name, product.name, product.price, product.picture FROM category INNER JOIN product ON product.id_category = category.id WHERE category.id = '${id}'`, (err, result) => {
+            db.query(`SELECT * FROM category WHERE id = '${id}'`, (err, result) => {
                 if (err) {
                     reject(new Error(err))
                 } else {

@@ -16,6 +16,16 @@ const response = {
             data
         }
         res.json(result)
+    },
+    successWithMeta: (res, data, meta, message) => {
+        const result = {
+            message,
+            success: true,
+            code: 201,
+            meta,
+            data
+        }
+        res.json(result)
     }
 }
 

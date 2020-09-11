@@ -6,7 +6,7 @@ const history = {
         const invoice = !req.query.invoices ? '' : req.query.invoices
         const sortBy = !req.query.sortBy ? 'id' : req.query.sortBy
         const sortType = !req.query.sortType ? 'asc' : req.query.sortType
-        const limit = !req.query.limit ? 10 : parseInt(req.query.limit)
+        const limit = !req.query.limit ? 7 : parseInt(req.query.limit)
         const page = !req.query.page ? 1 : parseInt(req.query.page)
         const offset = page === 1 ? 0 : (page - 1) * limit
         historyModel.getAll(invoice, sortBy, sortType, limit, offset)
