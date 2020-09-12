@@ -1,5 +1,6 @@
 const productModel = require('../models/products_models')
 const { success, failed, successWithMeta } = require('../helpers/response')
+const upload = require('../helpers/upload')
 
 const product = {
     getAll: (req, res) => {
@@ -34,27 +35,47 @@ const product = {
         })
     },
     insert: (req, res) => {
-        const body = req.body
-        body.picture = req.file.filename
-        productModel.insert(body)
-        .then((result) => {
-            success(res, result, 'Insert product success')
-        })
-        .catch((err) => {
-            failed(res, [], err.message)
-        })
+        upload.single('picture')(req, res, (err) => {
+            if (err) {
+                if (err.code === 'LIMIT_FILE_SIZE') {
+                    failed(res, [], 'File too large')
+                } else {
+                    failed(res, [], err)
+                }
+            } else {
+                const body = req.body
+                body.picture = req.file.filename
+                productModel.insert(body)
+                .then((result) => {
+                    success(res, result, 'Insert product success')
+                })
+                .catch((err) => {
+                    failed(res, [], err.message)
+                })
+                    }
+                })
     },
     update: (req, res) => {
-        const id = req.params.id
-        const body = req.body
-        body.picture = !req.file ? '' : req.file.filename
-        productModel.update(body, id)
-        .then((result) => {
-            success(res, result, 'Update product success')
-        })
-        .catch((err) => {
-            failed(res, [], err.message)
-        })
+        upload.single('picture')(req, res, (err) => {
+            if (err) {
+                if (err.code === 'LIMIT_FILE_SIZE') {
+                    failed(res, [], 'File too large')
+                } else {
+                    failed(res, [], err)
+                }
+            } else {
+                const id = req.params.id
+                const body = req.body
+                body.picture = !req.file ? '' : req.file.filename
+                productModel.update(body, id)
+                .then((result) => {
+                    success(res, result, 'Update product success')
+                })
+                .catch((err) => {
+                    failed(res, [], err.message)
+                })
+                    }
+                })
     },
     delete: (req, res) => {
         const id = req.params.id

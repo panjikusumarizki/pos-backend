@@ -26,6 +26,15 @@ const response = {
             data
         }
         res.json(result)
+    },
+    tokenResult: (res, data, message) => {
+        const result = {
+            message: message,
+            success: true,
+            code: 200,
+            data: data
+        }
+        res.json(result)
     }
 }
 
