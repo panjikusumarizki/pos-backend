@@ -1,14 +1,15 @@
 const express = require('express')
 const productController = require('../controllers/products_controllers')
-const { authentication, authorization } = require('../helpers/auth')
+
+const redis = require('../helpers/redis')
 
 const router = express.Router()
 
 router
-    .get('/getAll', authentication, authorization, productController.getAll)
-    .get('/getDetail/:id', authentication, authorization,productController.getDetail)
-    .post('/insert', authentication, authorization,productController.insert)
-    .patch('/update/:id', authentication, authorization, productController.update)
-    .delete('/delete/:id', authentication, authorization, productController.delete)
+    .get('/getAll', redis.getProduct, productController.getAll)
+    .get('/getDetail/:id', productController.getDetail)
+    .post('/insert', productController.insert)
+    .patch('/update/:id', productController.update)
+    .delete('/delete/:id', productController.delete)
 
 module.exports = router

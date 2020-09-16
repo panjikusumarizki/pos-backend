@@ -2,6 +2,11 @@ const productModel = require('../models/products_models')
 const { success, failed, successWithMeta } = require('../helpers/response')
 const upload = require('../helpers/upload')
 
+const redis = require('redis')
+const redisClient = redis.createClient()
+
+const { REDISPRODUCT } = require('../helpers/env')
+
 const product = {
     getAll: (req, res) => {
         const nama = !req.query.name ? '' : req.query.name
@@ -12,13 +17,14 @@ const product = {
         const offset = page===1 ? 0 : (page-1)*limit
         productModel.getAll(nama, sortBy, sortType, limit, offset)
         .then((result) => {
+            redisClient.set(REDISPRODUCT, JSON.stringify(result))
             const totalRows = result[0].count
             const meta = {
                 totalRows: totalRows,
                 totalPage: Math.ceil(totalRows/limit),
                 page
             }
-            successWithMeta(res, result, meta, 'Get all product success')
+            successWithMeta(res, result, meta, 'Get data from database')
         })
         .catch((err) => {
             failed(res, [], err.message)
@@ -38,7 +44,7 @@ const product = {
         upload.single('picture')(req, res, (err) => {
             if (err) {
                 if (err.code === 'LIMIT_FILE_SIZE') {
-                    failed(res, [], 'File too large')
+                    failed(res, [], 'File size max 1 mb')
                 } else {
                     failed(res, [], err)
                 }
@@ -47,6 +53,7 @@ const product = {
                 body.picture = req.file.filename
                 productModel.insert(body)
                 .then((result) => {
+                    redisClient.del(REDISPRODUCT)
                     success(res, result, 'Insert product success')
                 })
                 .catch((err) => {
@@ -59,7 +66,7 @@ const product = {
         upload.single('picture')(req, res, (err) => {
             if (err) {
                 if (err.code === 'LIMIT_FILE_SIZE') {
-                    failed(res, [], 'File too large')
+                    failed(res, [], 'File size max 1 mb')
                 } else {
                     failed(res, [], err)
                 }
@@ -69,6 +76,7 @@ const product = {
                 body.picture = !req.file ? '' : req.file.filename
                 productModel.update(body, id)
                 .then((result) => {
+                    redisClient.del(REDISPRODUCT)
                     success(res, result, 'Update product success')
                 })
                 .catch((err) => {
@@ -81,6 +89,7 @@ const product = {
         const id = req.params.id
         productModel.delete(id)
         .then((result) => {
+            redisClient.del(REDISPRODUCT)
             success(res, result, 'Delete product success')
         })
         .catch((err) => {

@@ -1,6 +1,5 @@
 const db = require('../configs/db')
 const fs = require('fs')
-const { error } = require('console')
 
 const product = {
     getAll: (nama, sortBy, sortType, limit, offset) => {

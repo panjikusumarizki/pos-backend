@@ -30,19 +30,35 @@ const users = {
         .then(async (result) => {
             const results = result[0]
             const password = results.password
+            const userRefreshToken = results.refreshToken
             const isMatch = await bcrypt.compare(body.password, password)
             if (isMatch) {
-                jwt.sign(
-                    {
-                        email: results.email
-                    },
-                    JWTKEY,
-                    {expiresIn: 3600},
+                jwt.sign({
+                    email: results.email
+                }, JWTKEY, {expiresIn: 15},
                     (err, token) => {
                         if (err) {
                             console.log(err)
                         } else {
-                            tokenResult(res, { token: token }, 'Login successful')
+                            if (userRefreshToken === null) {
+                                const id = results.id
+                                const refreshToken = jwt.sign({ id }, 'REFRESH')
+                                userModel.updateRefreshToken(refreshToken, id).then(() => {
+                                    const data = {
+                                        token: token,
+                                        refreshToken: refreshToken
+                                    }
+                                    tokenResult(res, data, 'Login successful')
+                                }).catch((err) => {
+                                    console.log(err)
+                                })
+                            } else {
+                                const data = {
+                                    token: token,
+                                    refreshToken: userRefreshToken
+                                }
+                                tokenResult(res, data, 'Login successful')
+                            }
                         }
                     }
                 )
@@ -51,6 +67,26 @@ const users = {
             }
         })
         .catch((err) => {
+            failed(res, [], err.message)
+        })
+    },
+    requestToken: (req, res) => {
+        const refreshToken = req.body.refreshToken
+        console.log(refreshToken)
+        userModel.checkRefreshToken(refreshToken).then((result) => {
+            console.log(result)
+            if (result.length >= 1) {
+                const user = result[0]
+                const newToken = jwt.sign({ email: user.email }, JWTKEY, {expiresIn: 36000})
+                const data = {
+                    token: newToken,
+                    refreshToken: refreshToken
+                }
+                tokenResult(res, data, 'Successfully refresh token')
+            } else {
+                failed(res, [], 'Refresh token not found')
+            }
+        }).catch((err) => {
             failed(res, [], err.message)
         })
     }
