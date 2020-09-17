@@ -12,7 +12,7 @@ const product = {
         const nama = !req.query.name ? '' : req.query.name
         const sortBy = !req.query.sortBy ? 'id' : req.query.sortBy
         const sortType = !req.query.sortType ? 'asc' : req.query.sortType
-        const limit = !req.query.limit ? 9 : parseInt(req.query.limit)
+        const limit = !req.query.limit ? 20 : parseInt(req.query.limit)
         const page = !req.query.page ? 1 : parseInt(req.query.page)
         const offset = page===1 ? 0 : (page-1)*limit
         productModel.getAll(nama, sortBy, sortType, limit, offset)
