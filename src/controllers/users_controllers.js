@@ -18,10 +18,10 @@ const users = {
 
         userModel.register(data)
         .then((result) => {
-            success(res, result, 'Insert user success')
+            success(res, result, 'Register success')
         })
-        .catch((err) => {
-            failed(res, [], err.message)
+        .catch(() => {
+            failed(res, [], 'Email is exist')
         })
     },
     login: async (req, res) => {
@@ -31,8 +31,8 @@ const users = {
             const results = result[0]
             const password = results.password
             const userRefreshToken = results.refreshToken
-            const isMatch = await bcrypt.compare(body.password, password)
-            if (isMatch) {
+            const isPasswordMatch = await bcrypt.compare(body.password, password)
+            if (isPasswordMatch) {
                 jwt.sign({
                     email: results.email
                 }, JWTKEY, {expiresIn: 15},
@@ -50,7 +50,7 @@ const users = {
                                     }
                                     tokenResult(res, data, 'Login successful')
                                 }).catch((err) => {
-                                    console.log(err)
+                                    failed(res, [], err.message)
                                 })
                             } else {
                                 const data = {
@@ -66,21 +66,18 @@ const users = {
                 failed(res, [], 'Password is wrong')
             }
         })
-        .catch((err) => {
-            failed(res, [], err.message)
+        .catch(() => {
+            failed(res, [], 'Email is wrong')
         })
     },
     requestToken: (req, res) => {
         const refreshToken = req.body.refreshToken
-        console.log(refreshToken)
         userModel.checkRefreshToken(refreshToken).then((result) => {
-            console.log(result)
             if (result.length >= 1) {
                 const user = result[0]
                 const newToken = jwt.sign({ email: user.email }, JWTKEY, {expiresIn: 36000})
                 const data = {
-                    token: newToken,
-                    refreshToken: refreshToken
+                    newToken: newToken
                 }
                 tokenResult(res, data, 'Successfully refresh token')
             } else {

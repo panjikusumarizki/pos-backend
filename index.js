@@ -14,9 +14,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.static('src/uploads'))
-app.use('/api/v1/product', authentication, authorization, productRouter)
-app.use('/api/v1/category', authentication, authorization, ctgRouter)
-app.use('/api/v1/history', authentication, authorization, historyRouter)
+app.use('/product', authentication, authorization, productRouter)
+app.use('/category', authentication, authorization, ctgRouter)
+app.use('/history', authentication, authorization, historyRouter)
 app.use('/users', userRouter)
 
 app.listen(PORT, () => {

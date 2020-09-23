@@ -44,7 +44,7 @@ const product = {
                     } else {
                         resolve(new Promise((resolve, reject) => {
                             data.picture = resultGet[0].picture
-                            db.query(`UPDATE product SET ? WHERE id = ?`, [data, id], (err, res) => {
+                            db.query(`UPDATE product SET id_category = '${data.id_category}', name = '${data.name}', price = '${data.price}', picture = '${data.picture}' WHERE id = '${id}'`, (err, res) => {
                                 if (err) {
                                     reject(new Error(err))
                                 } else {
@@ -67,7 +67,7 @@ const product = {
                                     console.log('update image success')
                                 }
                             })
-                            db.query(`UPDATE product SET ? WHERE id = ?`, [data, id],(err, resultUpd) => {
+                            db.query(`UPDATE product SET id_category = '${data.id_category}', name = '${data.name}', price = '${data.price}', picture = '${data.picture}' WHERE id = '${id}'`, (err, resultUpd) => {
                                 if (err) {
                                     reject(new Error(err))
                                 } else {

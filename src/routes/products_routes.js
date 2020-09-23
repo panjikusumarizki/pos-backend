@@ -9,7 +9,7 @@ router
     .get('/getAll', redis.getProduct, productController.getAll)
     .get('/getDetail/:id', productController.getDetail)
     .post('/insert', productController.insert)
-    .patch('/update/:id', productController.update)
+    .put('/update/:id', productController.update)
     .delete('/delete/:id', productController.delete)
 
 module.exports = router

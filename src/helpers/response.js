@@ -43,7 +43,16 @@ const response = {
             code: 500,
             data: data
         }
-        res.json(result)
+        res.status(500).json(result)
+    },
+    tokenExpiredResult: (res, data, message) => {
+        const result = {
+            message: message,
+            success: false,
+            code: 405,
+            data: data
+        }
+        res.status(405).json(result)
     }
 }
 

@@ -9,13 +9,13 @@ const { REDISPRODUCT } = require('../helpers/env')
 
 const product = {
     getAll: (req, res) => {
-        const nama = !req.query.name ? '' : req.query.name
+        const search = !req.query.search ? '' : req.query.search
         const sortBy = !req.query.sortBy ? 'id' : req.query.sortBy
         const sortType = !req.query.sortType ? 'asc' : req.query.sortType
         const limit = !req.query.limit ? 20 : parseInt(req.query.limit)
         const page = !req.query.page ? 1 : parseInt(req.query.page)
         const offset = page===1 ? 0 : (page-1)*limit
-        productModel.getAll(nama, sortBy, sortType, limit, offset)
+        productModel.getAll(search, sortBy, sortType, limit, offset)
         .then((result) => {
             redisClient.set(REDISPRODUCT, JSON.stringify(result))
             const totalRows = result[0].count
