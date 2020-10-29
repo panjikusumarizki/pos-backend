@@ -2,10 +2,10 @@ const productModel = require('../models/products_models')
 const { success, failed, successWithMeta } = require('../helpers/response')
 const upload = require('../helpers/upload')
 
-const redis = require('redis')
-const redisClient = redis.createClient()
+// const redis = require('redis')
+// const redisClient = redis.createClient()
 
-const { REDISPRODUCT } = require('../helpers/env')
+// const { REDISPRODUCT } = require('../helpers/env')
 
 const product = {
     getAll: (req, res) => {
@@ -17,7 +17,7 @@ const product = {
         const offset = page===1 ? 0 : (page-1)*limit
         productModel.getAll(search, sortBy, sortType, limit, offset)
         .then((result) => {
-            redisClient.set(REDISPRODUCT, JSON.stringify(result))
+            // redisClient.set(REDISPRODUCT, JSON.stringify(result))
             const totalRows = result[0].count
             const meta = {
                 totalRows: totalRows,
@@ -53,7 +53,7 @@ const product = {
                 body.picture = req.file.filename
                 productModel.insert(body)
                 .then((result) => {
-                    redisClient.del(REDISPRODUCT)
+                    // redisClient.del(REDISPRODUCT)
                     success(res, result, 'Insert product success')
                 })
                 .catch((err) => {
@@ -76,7 +76,7 @@ const product = {
                 body.picture = !req.file ? '' : req.file.filename
                 productModel.update(body, id)
                 .then((result) => {
-                    redisClient.del(REDISPRODUCT)
+                    // redisClient.del(REDISPRODUCT)
                     success(res, result, 'Update product success')
                 })
                 .catch((err) => {
@@ -89,7 +89,7 @@ const product = {
         const id = req.params.id
         productModel.delete(id)
         .then((result) => {
-            redisClient.del(REDISPRODUCT)
+            // redisClient.del(REDISPRODUCT)
             success(res, result, 'Delete product success')
         })
         .catch((err) => {

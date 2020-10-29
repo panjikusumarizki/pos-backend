@@ -1,10 +1,10 @@
 const historyModel = require('../models/history_models')
 const { success, failed } = require('../helpers/response')
 
-const redis = require('redis')
-const redisClient = redis.createClient()
+// const redis = require('redis')
+// const redisClient = redis.createClient()
 
-const { REDISHIST } = require('../helpers/env')
+// const { REDISHIST } = require('../helpers/env')
 
 const history = {
     getAll: (req, res) => {
@@ -16,7 +16,7 @@ const history = {
         const offset = page === 1 ? 0 : (page - 1) * limit
         historyModel.getAll(invoice, sortBy, sortType, limit, offset)
         .then((result) => {
-            redisClient.set(REDISHIST, JSON.stringify(result))
+            // redisClient.set(REDISHIST, JSON.stringify(result))
             success(res, result, 'Get data from database')
         })
         .catch((err) => {
@@ -43,7 +43,7 @@ const history = {
                 historyModel.insertDetail(item)
             })
             Promise.all(insertDetails).then(() => {
-                redisClient.del(REDISHIST)
+                // redisClient.del(REDISHIST)
                 success(res, response, 'Insert data success')
             }).catch((err) => {
                 failed(res, [], err.message)
@@ -58,7 +58,7 @@ const history = {
         const body = req.body
         historyModel.update(body, id)
         .then((result) => {
-            redisClient.del(REDISHIST)
+            // redisClient.del(REDISHIST)
             success(res, result, 'Update data success')
         })
         .catch((err) => {
@@ -69,7 +69,7 @@ const history = {
         const id = req.params.id
         historyModel.delete(id)
         .then((result) => {
-            redisClient.del(REDISHIST)
+            // redisClient.del(REDISHIST)
             success(res, result, 'Delete data success')
         })
         .catch((err) => {

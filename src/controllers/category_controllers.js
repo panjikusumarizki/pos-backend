@@ -1,10 +1,10 @@
 const ctgModel = require('../models/category_models')
 const { success, failed } = require('../helpers/response')
 
-const redis = require('redis')
-const redisClient = redis.createClient()
+// const redis = require('redis')
+// const redisClient = redis.createClient()
 
-const { REDISCTG } = require('../helpers/env')
+// const { REDISCTG } = require('../helpers/env')
 
 const category = {
     getAll: (req, res) => {
@@ -15,7 +15,7 @@ const category = {
         const offset = page === 1 ? 0 : (page - 1)*limit
         ctgModel.getAll(sortBy, sortType, limit, offset)
         .then((result) => {
-            redisClient.set(REDISCTG, JSON.stringify(result))
+            // redisClient.set(REDISCTG, JSON.stringify(result))
             success(res, result, 'Get data from database')
         })
         .catch((err) => {
@@ -36,7 +36,7 @@ const category = {
         const body = req.body
         ctgModel.insert(body)
         .then((result) => {
-            redisClient.del(REDISCTG)
+            // redisClient.del(REDISCTG)
             success(res, result, 'Insert category success')
         })
         .catch((err) => {
@@ -48,7 +48,7 @@ const category = {
         const body = req.body
         ctgModel.update(body, id)
         .then((result) => {
-            redisClient.del(REDISCTG)
+            // redisClient.del(REDISCTG)
             success(res, result, 'Update category success')
         })
         .catch((err) => {
@@ -59,7 +59,7 @@ const category = {
         const id = req.params.id
         ctgModel.delete(id)
         .then((result) => {
-            redisClient.del(REDISCTG)
+            // redisClient.del(REDISCTG)
             success(res, result, 'Delete category success')
         })
         .catch((err) => {
