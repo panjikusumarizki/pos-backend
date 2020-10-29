@@ -3,7 +3,7 @@ const response = {
         const result = {
             message,
             success: true,
-            code: 200,
+            status: 200,
             data
         }
         res.json(result)
@@ -12,7 +12,7 @@ const response = {
         const result = {
             message,
             success: false,
-            code: 500,
+            status: 500,
             data
         }
         res.json(result)
@@ -21,7 +21,7 @@ const response = {
         const result = {
             message,
             success: true,
-            code: 201,
+            status: 201,
             meta,
             data
         }
@@ -40,7 +40,7 @@ const response = {
         const result = {
             message,
             success: false,
-            code: 500,
+            status: 501,
             data: data
         }
         res.status(500).json(result)
@@ -49,7 +49,7 @@ const response = {
         const result = {
             message: message,
             success: false,
-            code: 405,
+            status: 405,
             data: data
         }
         res.status(405).json(result)

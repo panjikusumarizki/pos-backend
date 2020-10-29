@@ -59,8 +59,8 @@ const product = {
                 .catch((err) => {
                     failed(res, [], err.message)
                 })
-                    }
-                })
+            }
+        })
     },
     update: (req, res) => {
         upload.single('picture')(req, res, (err) => {
@@ -82,8 +82,8 @@ const product = {
                 .catch((err) => {
                     failed(res, [], err.message)
                 })
-                    }
-                })
+            }
+        })
     },
     delete: (req, res) => {
         const id = req.params.id
